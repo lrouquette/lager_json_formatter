@@ -35,7 +35,10 @@ output({Key, Value}, Map, Message) ->
 get_data(Value, _) when is_list(Value); is_binary(Value) ->
   Value;
 get_data(message, Message) ->
-  to_binary(lager_msg:message(Message));
+  case lager_msg:message(Message) of
+    MapMsg when is_map(MapMsg) -> MapMsg;
+    Msg -> to_binary(Msg)
+  end;
 get_data(date, Message) ->
   {D, _} = lager_msg:datetime(Message),
   to_binary(D);
